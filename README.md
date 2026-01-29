@@ -1,1 +1,1 @@
-# tryout
+Tryout Online is a web-based application that provides online exam simulations for students. It allows admins/teachers to manage question banks and tryout settings, while students can take timed tryouts and receive automatic scoring and result records.
