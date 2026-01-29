@@ -1,0 +1,61 @@
+<?php
+session_start();
+include "library/config.php";
+
+if(empty($_SESSION['username']) or empty($_SESSION['password']) ){
+   header('location: login.php');
+}
+
+$ujian = mysqli_fetch_array(mysqli_query($mysqli, "SELECT * FROM ujian a JOIN mapel b ON(a.id_mapel=b.id_mapel) JOIN periode c ON(a.id_periode=c.id_periode) WHERE a.id_ujian='$_GET[ujian]'"));
+
+$qnilai = mysqli_query($mysqli, "SELECT * FROM nilai WHERE id_ujian='$_GET[ujian]' AND nis='$_SESSION[nis]'");
+$tnilai = mysqli_num_rows($qnilai);
+$rnilai = mysqli_fetch_array($qnilai);
+?>
+
+<h3 class="page-header"><i class="glyphicon glyphicon-user"></i> Data Siswa dan Ujian</h3>
+<div class="row">
+   <div class="col-md-3">NIS</div>
+   <div class="col-md-9">: <b><?= $_SESSION['nis']; ?> </b> </div>
+</div><br/>
+<div class="row">
+   <div class="col-md-3">Nama Lengkap</div>
+   <div class="col-md-9">: <b><?= $_SESSION['nama_siswa']; ?> </b></div>
+</div><br/>
+<div class="row">
+   <div class="col-md-3">Nama Mapel</div>
+   <div class="col-md-9">: <b><?= $ujian['nama_mapel']; ?></b></div>
+</div><br/>
+<div class="row">
+   <div class="col-md-3">Periode</div>
+   <div class="col-md-9">: <b><?= $ujian['nama_periode']; ?></b></div>
+</div><br/>
+<div class="row">
+   <div class="col-md-3">Jml. Soal</div>
+   <div class="col-md-9">: <b><?= $ujian['jml_soal']; ?></b></div>
+</div><br/>
+<div class="row">
+   <div class="col-md-3">Waktu Mengerjakan</div>
+   <div class="col-md-9">: <b><?= $ujian['waktu']; ?> menit</b></div>
+</div><br/>
+<?php  
+if($tnilai>0 and $rnilai['nilai'] != ""){ ?>
+   <div class="row">
+      <div class="col-md-3">Nilai</div>
+      <div class="col-md-9">: <b><?= $rnilai['nilai']; ?></b></div>
+   </div><br/>
+   <?php
+}
+?>
+<div class="row">
+   <div class="col-md-12">
+
+      <?php	
+//Jika nilai sudah ada tampilkan tombol Sudah Mengerjakan, jika belum ada tampilkan tombol Masuk Ujian
+      if($tnilai>0 and $rnilai['nilai'] != "")  echo '<a class="btn btn-danger disabled"> Sudah mengerjakan </a>';
+      else echo '<a class="btn btn-primary" onclick="show_petunjuk('.$_GET['ujian'].')">
+      <i class="glyphicon glyphicon-log-in"></i> Masuk Ujian</a>';
+      ?>
+
+   </div>
+</div><br/>
